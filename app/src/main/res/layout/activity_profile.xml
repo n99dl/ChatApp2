@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    tools:context=".ProfileActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/toolbar"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/MenuStyle">
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:padding="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp">
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:src="@mipmap/ic_user_default" />
+
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_image"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:text="username"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/friend_button"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/username"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:background="@color/colorPrimary"
+                android:text="Add friend"
+                android:textColor="#fff" />
+
+            <Button
+                android:id="@+id/chat_button"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/friend_button"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="20dp"
+                android:background="@color/colorPrimary"
+                android:text="Chat"
+                android:textColor="#fff" />
+
+            <Button
+                android:id="@+id/call_button"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/friend_button"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="20dp"
+                android:layout_alignParentRight="true"
+                android:background="@color/colorPrimary"
+                android:text="Call"
+                android:textColor="#fff" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

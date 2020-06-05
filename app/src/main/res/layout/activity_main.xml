@@ -27,6 +27,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/username"
+                android:textSize="20sp"
+                android:text="Username"
                 android:layout_marginLeft="20dp"
                 android:textColor="#fff"
                 android:layout_marginStart="25dp"/>

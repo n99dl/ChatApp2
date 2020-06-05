@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                     Glide.with(MainActivity.this).load(user.getImageURL()).into(profileImage);
                 }
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

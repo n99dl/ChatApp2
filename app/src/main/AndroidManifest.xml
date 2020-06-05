@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ChatActivity"></activity>
+        <activity android:name=".ChatActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".StartActivity">
             <intent-filter>
@@ -24,6 +24,9 @@
         <activity
             android:name=".SignUpActivity"
             android:parentActivityName=".StartActivity" />
+        <activity
+            android:name=".ProfileActivity"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>
