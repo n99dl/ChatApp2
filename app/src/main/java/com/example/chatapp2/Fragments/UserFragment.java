@@ -51,8 +51,6 @@ public class UserFragment extends Fragment {
 
         readUsers();
 
-        readUsers();
-
         return view;
     }
 
