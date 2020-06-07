@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.chatapp2.Fragments.ChatsFragment;
 import com.example.chatapp2.Fragments.ProfileFragment;
+import com.example.chatapp2.Fragments.FriendFragment;
 import com.example.chatapp2.Fragments.UserFragment;
 import com.example.chatapp2.Model.User;
 import com.google.android.material.tabs.TabLayout;
@@ -55,6 +56,20 @@ public class MainActivity extends AppCompatActivity {
         profileImage = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
 
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openProfile();
+            }
+        });
+        username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openProfile();
+            }
+        });
+
+
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
 
@@ -83,8 +98,9 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter viewPagerAdapter= new ViewPagerAdapter(getSupportFragmentManager());
 
         viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
-        viewPagerAdapter.addFragment(new UserFragment(), "Friends");
-        viewPagerAdapter.addFragment(new ProfileFragment(), "Profile");
+        viewPagerAdapter.addFragment(new FriendFragment(), "Friends");
+        viewPagerAdapter.addFragment(new UserFragment(), "Find friends");
+        //viewPagerAdapter.addFragment(new ProfileFragment(), "Profile");
 
         viewPager.setAdapter(viewPagerAdapter);
 
@@ -106,9 +122,19 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                 return  true;
+            case R.id.profile:
+                openProfile();
+                return true;
         }
 
         return false;
+    }
+
+    private void openProfile() {
+        Intent intent = new Intent(MainActivity.this, ProfileActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("userid", firebaseUser.getUid());
+        intent.putExtra("profileType", "user");
+        startActivity(intent);
     }
 
     public static class ViewPagerAdapter extends FragmentPagerAdapter {

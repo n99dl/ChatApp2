@@ -1,13 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.UserFragment">
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:hint="Search by username..."
+        android:id="@+id/search_user"
+        android:maxLines="1"
+        android:inputType="text|textUri"
+        android:imeOptions="actionGo"
+        android:imeActionId="666"
+        android:imeActionLabel="Some Label"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="-39dp"
+        android:layout_toRightOf="@id/search_user"
+        android:src="@drawable/ic_search"
+        android:id="@+id/search_img"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recycler_view"/>
+        android:id="@+id/recycler_view"
+        android:layout_below="@id/search_user"/>
 
-</FrameLayout>
+</RelativeLayout>

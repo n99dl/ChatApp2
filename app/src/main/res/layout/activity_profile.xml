@@ -28,13 +28,25 @@
             android:layout_height="match_parent"
             android:padding="8dp">
 
+            <TextView
+                android:id="@+id/editImageProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_centerHorizontal="true"
+                android:text="tap image to change profile image"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="14sp"
+                android:visibility="invisible"
+                android:textStyle="italic"/>
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/editImageProfile"
                 android:src="@mipmap/ic_user_default" />
 
             <TextView
