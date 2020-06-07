@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chat App"
+        android:text="Greenchat"
         android:textSize="35sp"
         android:textStyle="bold"/>
 
@@ -30,5 +30,11 @@
         android:background="@color/colorPrimaryDark"
         android:id="@+id/sign_up"
         android:text="Sign Up"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text=""/>
 
 </LinearLayout>

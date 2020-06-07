@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.chatapp2.Adapter.ChatsAdapter;
 import com.example.chatapp2.Adapter.UserAdapter;
 import com.example.chatapp2.Model.Chat;
 import com.example.chatapp2.Model.User;
@@ -32,7 +33,7 @@ public class ChatsFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
-    private UserAdapter userAdapter;
+    private ChatsAdapter chatsAdapter;
     private List<User> mUsers;
 
     FirebaseUser firebaseUser;
@@ -115,8 +116,8 @@ public class ChatsFragment extends Fragment {
                     }
                 }
                 Log.d("CFTest", "onDataChange: " + mUsers.size());
-                UserAdapter userAdapter = new UserAdapter(getContext(), mUsers);
-                recyclerView.setAdapter(userAdapter);
+                ChatsAdapter chatsAdapter = new ChatsAdapter(getContext(), mUsers);
+                recyclerView.setAdapter(chatsAdapter);
             }
 
             @Override

@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.chatapp2.Adapter.UserAdapter;
+import com.example.chatapp2.Model.Chat;
+import com.example.chatapp2.Model.FriendRelation;
 import com.example.chatapp2.Model.User;
 import com.example.chatapp2.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,17 +27,15 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link UserFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class UserFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
     private UserAdapter userAdapter;
     private List<User> mUsers;
+    private List<String> usersList;
+
+    FirebaseUser firebaseUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,8 +48,34 @@ public class UserFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         mUsers = new ArrayList<>();
+        usersList = new ArrayList<>();
 
         readUsers();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Friends_list");
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                usersList.clear();
+
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                    FriendRelation chat = snapshot.getValue(FriendRelation.class);
+
+                    if (chat.getUser().equals(firebaseUser.getUid())) {
+                        usersList.add(chat.getFriend());
+                    }
+                }
+                readUsers();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
         return view;
     }
@@ -65,8 +91,10 @@ public class UserFragment extends Fragment {
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()){
                     User user = snapshot.getValue(User.class);
 
-                    if (!user.getId().equals(firebaseUser.getUid())) {
-                        mUsers.add(user);
+                    for (String userId: usersList) {
+                        if (user.getId().equals(userId)) {
+                            mUsers.add(user);
+                        }
                     }
                 }
 
