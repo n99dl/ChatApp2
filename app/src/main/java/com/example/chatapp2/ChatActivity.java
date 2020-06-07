@@ -10,7 +10,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.renderscript.Sampler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -39,6 +41,7 @@ public class ChatActivity extends AppCompatActivity {
 
     CircleImageView profileImage;
     TextView username;
+    TextView status;
 
     FirebaseUser firebaseUser;
     DatabaseReference reference;
@@ -62,6 +65,7 @@ public class ChatActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,13 +81,14 @@ public class ChatActivity extends AppCompatActivity {
 
         profileImage = findViewById(R.id.profile_image);
         username = findViewById(R.id.username);
+        status = findViewById(R.id.status);
+
         btn_send = findViewById(R.id.btn_send);
         text_send = findViewById(R.id.text_send);
 
 
         intent = getIntent();
         final String userId = intent.getStringExtra("userid");
-
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -105,6 +110,12 @@ public class ChatActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     User user = dataSnapshot.getValue(User.class);
                     username.setText(user.getUsername());
+                    status.setText("- " + user.getStatus());
+                    if (user.getStatus().equals("online")) {
+                        status.setTextColor(getResources().getColor(R.color.onlineColor));
+                    } else {
+                        status.setTextColor(getResources().getColor(R.color.offlineColor));
+                    }
 
                 if (user.getImageURL().equals("default")) {
                     profileImage.setImageResource(R.mipmap.ic_user_default);
