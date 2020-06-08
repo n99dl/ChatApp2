@@ -159,7 +159,7 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void sendMessage(String sender, String receiver, String message) {
+    private void sendMessage(String sender, final String receiver, String message) {
 
         Log.d("messageTest", "sendMessage: message Sent");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -170,6 +170,24 @@ public class ChatActivity extends AppCompatActivity {
         hashMap.put("is_seen", false);
 
         reference.child("Chat_logs").push().setValue(hashMap);
+
+//        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
+//                .child(firebaseUser.getUid())
+//                .child(receiver);
+//
+//        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                if (!dataSnapshot.exists()) {
+//                    chatRef.child("id").setValue(receiver);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     private void readMessage(final String myId, final String userId, final String imageURL) {

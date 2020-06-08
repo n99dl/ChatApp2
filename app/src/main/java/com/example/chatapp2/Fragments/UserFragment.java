@@ -67,18 +67,18 @@ public class UserFragment extends Fragment {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Friends_list");
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        search_user.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled = false;
-                if (actionId == EditorInfo.IME_ACTION_GO) {
-                    //Perform your Actions here.
-                    searchUser(search_user.getText().toString());
-                    handled = true;
-                }
-                return handled;
-            }
-        });
+//        search_user.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//            @Override
+//            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+//                boolean handled = false;
+//                if (actionId == EditorInfo.IME_ACTION_GO) {
+//                    //Perform your Actions here.
+//                    searchUser(search_user.getText().toString());
+//                    handled = true;
+//                }
+//                return handled;
+//            }
+//        });
 
         search_img.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -119,8 +119,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.logout:
+                status("offline");
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                startActivity(new Intent(MainActivity.this, StartActivity.class));
                 return  true;
             case R.id.profile:
                 openProfile();
@@ -173,12 +174,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void status(String status) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        if (firebaseUser != null) {
+            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
 
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("status", status);
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("status", status);
 
-        databaseReference.updateChildren(hashMap);
+            databaseReference.updateChildren(hashMap);
+        }
     }
 
     @Override
