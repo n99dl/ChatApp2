@@ -18,24 +18,37 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SimpleCursorTreeAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.chatapp2.Adapter.MessageAdapter;
+import com.example.chatapp2.Fragments.APIService;
 import com.example.chatapp2.Model.Chat;
 import com.example.chatapp2.Model.User;
+import com.example.chatapp2.Notification.Client;
+import com.example.chatapp2.Notification.Data;
+import com.example.chatapp2.Notification.MyResponse;
+import com.example.chatapp2.Notification.Sender;
+import com.example.chatapp2.Notification.Token;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -58,6 +71,10 @@ public class ChatActivity extends AppCompatActivity {
 
     ValueEventListener seenListener;
 
+    APIService apiService;
+
+    boolean notify = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +91,8 @@ public class ChatActivity extends AppCompatActivity {
                 startActivity(new Intent(ChatActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
             }
         });
+
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
 
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -97,6 +116,7 @@ public class ChatActivity extends AppCompatActivity {
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                notify = true;
                 String msg = text_send.getText().toString();
                 if (!msg.equals("")) {
                     sendMessage(firebaseUser.getUid(), userId, msg);
@@ -163,6 +183,8 @@ public class ChatActivity extends AppCompatActivity {
 
         Log.d("messageTest", "sendMessage: message Sent");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        final String userid = intent.getStringExtra("userid");
+
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", sender);
         hashMap.put("receiver", receiver);
@@ -171,23 +193,112 @@ public class ChatActivity extends AppCompatActivity {
 
         reference.child("Chat_logs").push().setValue(hashMap);
 
-//        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
-//                .child(firebaseUser.getUid())
-//                .child(receiver);
-//
-//        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                if (!dataSnapshot.exists()) {
-//                    chatRef.child("id").setValue(receiver);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
+        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
+                .child(firebaseUser.getUid())
+                .child(userid);
+
+        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    chatRef.child("id").setValue(userid);
+                    chatRef.child("timestamp").setValue(ServerValue.TIMESTAMP);
+                } else {
+                    HashMap<String, Object> map = new HashMap<>();
+//                    map.put("id", userid);
+                    map.put("timestamp", ServerValue.TIMESTAMP);
+                    chatRef.updateChildren(map);
+//                    chatRef.removeValue();
+//                    chatRef.child("id").setValue(userid);
+//                    chatRef.child("timestamp").setValue(ServerValue.TIMESTAMP);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        final DatabaseReference chatRef2 = FirebaseDatabase.getInstance().getReference("Chatlist")
+                .child(userid)
+                .child(firebaseUser.getUid());
+
+        chatRef2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    chatRef2.child("id").setValue(firebaseUser.getUid());
+                    chatRef2.child("timestamp").setValue(ServerValue.TIMESTAMP);
+                } else {
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("timestamp", ServerValue.TIMESTAMP);
+                    chatRef2.updateChildren(map);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        final String msg = message;
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (notify) {
+                    sendNotification(receiver, user.getUsername(), msg);
+                }
+                notify = false;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void sendNotification(String receiver, final String username, final String message) {
+        final String userid = intent.getStringExtra("userid");
+        DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = tokens.orderByKey().equalTo(receiver);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                     Token token =  snapshot.getValue(Token.class);
+                     Data data = new Data(firebaseUser.getUid(), R.drawable.ic_message_notify , username + ": " + message,
+                             "New Message", userid);
+                     Sender sender = new Sender(data, token.getToken());
+                     apiService.sendNotification(sender)
+                             .enqueue(new Callback<MyResponse>() {
+                                 @Override
+                                 public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                                     Log.d("test bug", "onResponse: " + response.code() + message);
+                                     if (response.code() == 200) {
+                                         if (response.body().success == 1) {
+                                             Toast.makeText(ChatActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                                         }
+                                     }
+                                 }
+
+                                 @Override
+                                 public void onFailure(Call<MyResponse> call, Throwable throwable) {
+
+                                 }
+                             });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void readMessage(final String myId, final String userId, final String imageURL) {
