@@ -106,15 +106,19 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
         theLastMessage = "default";
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chat_logs");
+        if (firebaseUser == null) {
+            return;
+        }
+        String currentUserId = firebaseUser.getUid();
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
                     Chat chat = snapshot.getValue(Chat.class);
-                    if ((chat.getReceiver().equals(firebaseUser.getUid()) && chat.getSender().equals(userId)) ||
-                            (chat.getSender().equals(firebaseUser.getUid()) && chat.getReceiver().equals(userId))) {
+                    if ((chat.getReceiver().equals(currentUserId) && chat.getSender().equals(userId)) ||
+                            (chat.getSender().equals(currentUserId) && chat.getReceiver().equals(userId))) {
                             theLastMessage = chat.getMessage();
-                            if (chat.getSender().equals(firebaseUser.getUid())) {
+                            if (chat.getSender().equals(currentUserId)) {
                                 theLastMessage = "You: " + theLastMessage;
                         }
                     }

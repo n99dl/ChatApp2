@@ -16,7 +16,8 @@
         <activity android:name=".ResetPasswordActivity"
             android:parentActivityName=".LogInActivity">
         </activity>
-        <activity android:name=".ChatActivity" />
+        <activity android:name=".ChatActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".MainActivity" />
         <activity android:name=".StartActivity">
             <intent-filter>

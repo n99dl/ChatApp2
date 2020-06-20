@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sinch.verification.SinchVerification;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
     CircleImageView profileImage;
     TextView username;
+
+    Sinch
 
     FirebaseUser firebaseUser;
     DatabaseReference databaseReference;
@@ -126,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.logout:
                 status("offline");
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity.this, StartActivity.class));
+                startActivity(new Intent(getApplicationContext(), StartActivity.class));
                 return  true;
             case R.id.profile:
                 openProfile();
