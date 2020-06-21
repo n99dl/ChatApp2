@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +32,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.sinch.verification.SinchVerification;
+import com.sinch.android.rtc.Sinch;
+import com.sinch.android.rtc.SinchClient;
+import com.sinch.android.rtc.calling.Call;
+import com.sinch.android.rtc.calling.CallClient;
+import com.sinch.android.rtc.calling.CallClientListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -44,19 +49,31 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static MainActivity mainActivity;
     CircleImageView profileImage;
     TextView username;
 
-    Sinch
 
     FirebaseUser firebaseUser;
     DatabaseReference databaseReference;
+
+    SinchClient sinchClient;
+    public static Call uCall;
+    Call call;
+
+    public static Call getuCall() {
+        return uCall;
+    }
+
+    public static void setuCall(Call uCall) {
+        MainActivity.uCall = uCall;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mainActivity = this;
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
@@ -114,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
         tabLayout.setupWithViewPager(viewPager);
 
-
+        initSinch();
     }
 
     @Override
@@ -202,5 +219,36 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         status("offline");
+    }
+
+    void initSinch() {
+        sinchClient = Sinch.getSinchClientBuilder()
+                .context(this)
+                .userId(firebaseUser.getUid())
+                .applicationKey("e0f6bf72-e5d3-4714-81f3-d8d49e7f238d")
+                .applicationSecret("eiLXA+ac+U2Wp7JlG9f65w==")
+                .environmentHost("clientapi.sinch.com")
+                .build();
+        sinchClient.setSupportCalling(true);
+        sinchClient.startListeningOnActiveConnection();
+        sinchClient.start();
+        Log.d("sinchstart", "initiateSinch: ");
+        sinchClient.getCallClient().addCallClientListener(new SinchCallClientListener());
+    }
+
+    private class SinchCallClientListener implements CallClientListener {
+        @Override
+        public void onIncomingCall(CallClient callClient, Call incomingCall) {
+            call = incomingCall;
+            setuCall(incomingCall);
+            Intent intent = new Intent(MainActivity.this, CallActivity.class);
+            intent.putExtra("userid", call.getRemoteUserId());
+            intent.putExtra("type","receiving");
+            MainActivity.this.startActivity(intent);
+        }
+    }
+
+    public Call getCall() {
+        return call;
     }
 }

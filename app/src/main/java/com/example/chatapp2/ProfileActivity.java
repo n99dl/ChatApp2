@@ -4,11 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +39,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.sinch.android.rtc.Sinch;
+import com.sinch.android.rtc.SinchClient;
+import com.sinch.android.rtc.calling.Call;
 
 import java.util.HashMap;
 
@@ -55,6 +62,8 @@ public class ProfileActivity extends AppCompatActivity {
     private StorageTask uploadTask;
 
     Intent intent;
+
+    SinchClient sinchClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +103,29 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        initiateSinch();
+
+        callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*(if (isRecordAudioPermissionGranted()) {
+                    if (call == null) {
+                        call = sinchClient.getCallClient().callUser("call-recipient-id");
+                        button.setText("Hang Up");
+                    } else {
+                        call.hangup();
+                        call = null;
+                        button.setText("Call");
+                    }
+
+                }*/
+                Intent intent = new Intent(ProfileActivity.this, CallActivity.class);
+                intent.putExtra("userid",userId);
+                intent.putExtra("type","calling");
+                ProfileActivity.this.startActivity(intent);
+            }
+        });
 
         storageReference = FirebaseStorage.getInstance().getReference("profile_image_uploads");
 
@@ -257,6 +289,45 @@ public class ProfileActivity extends AppCompatActivity {
             } else {
                 uploadImage();
             }
+        }
+    }
+
+    private void initiateSinch()
+    {
+        sinchClient = Sinch.getSinchClientBuilder()
+                .context(this)
+                .userId(firebaseUser.getUid())
+                .applicationKey("e0f6bf72-e5d3-4714-81f3-d8d49e7f238d")
+                .applicationSecret("eiLXA+ac+U2Wp7JlG9f65w==")
+                .environmentHost("clientapi.sinch.com")
+                .build();
+        sinchClient.setSupportCalling(true);
+        sinchClient.start();
+        Log.d("sinchstart", "initiateSinch: ");
+    }
+
+    private final int AUDIO_RECORD_REQUEST_CODE = 1;
+
+    private boolean isRecordAudioPermissionGranted()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                // put your code for Version>=Marshmallow
+                return true;
+            } else {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+                    Toast.makeText(this,
+                            "App required access to audio", Toast.LENGTH_SHORT).show();
+                }
+                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO
+                },AUDIO_RECORD_REQUEST_CODE);
+                return false;
+            }
+
+        } else {
+            // put your code for Version < Marshmallow
+            return true;
         }
     }
 }

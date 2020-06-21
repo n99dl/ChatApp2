@@ -61,7 +61,7 @@ public class ChatActivity extends AppCompatActivity {
 
     Intent intent;
 
-    ImageButton btn_send;
+    ImageButton btn_send, btn_call;
     EditText text_send;
 
     MessageAdapter messageAdapter;
@@ -105,6 +105,7 @@ public class ChatActivity extends AppCompatActivity {
         status = findViewById(R.id.status);
 
         btn_send = findViewById(R.id.btn_send);
+        btn_call = findViewById(R.id.btn_call);
         text_send = findViewById(R.id.text_send);
 
 
@@ -122,6 +123,16 @@ public class ChatActivity extends AppCompatActivity {
                     sendMessage(firebaseUser.getUid(), userId, msg);
                 }
                 text_send.setText("");
+            }
+        });
+
+        btn_call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ChatActivity.this, CallActivity.class);
+                intent.putExtra("userid",userId);
+                intent.putExtra("type","calling");
+                ChatActivity.this.startActivity(intent);
             }
         });
 
@@ -281,7 +292,6 @@ public class ChatActivity extends AppCompatActivity {
                                      Log.d("test bug", "onResponse: " + response.code() + message);
                                      if (response.code() == 200) {
                                          if (response.body().success == 1) {
-                                             Toast.makeText(ChatActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                                          }
                                      }
                                  }
