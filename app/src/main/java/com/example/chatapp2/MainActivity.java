@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.chatapp2.Fragments.ChatsFragment;
+import com.example.chatapp2.Fragments.NewFeedFragment;
 import com.example.chatapp2.Fragments.ProfileFragment;
 import com.example.chatapp2.Fragments.FriendFragment;
 import com.example.chatapp2.Fragments.UserFragment;
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
         viewPagerAdapter.addFragment(new FriendFragment(), "Friends");
         viewPagerAdapter.addFragment(new UserFragment(), "Find friends");
-        //viewPagerAdapter.addFragment(new ProfileFragment(), "Profile");
+        viewPagerAdapter.addFragment(new NewFeedFragment(), "NewFeed");
 
         viewPager.setAdapter(viewPagerAdapter);
 

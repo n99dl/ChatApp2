@@ -23,6 +23,8 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".PostActivity"
+            android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".CallActivity" />
         <activity
             android:name=".ResetPasswordActivity"
