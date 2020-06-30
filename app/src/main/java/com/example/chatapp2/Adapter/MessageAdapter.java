@@ -1,21 +1,18 @@
 package com.example.chatapp2.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.chatapp2.ChatActivity;
 import com.example.chatapp2.Model.Chat;
-import com.example.chatapp2.Model.User;
 import com.example.chatapp2.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -54,7 +51,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
         Chat chat = mChats.get(position);
 
-        holder.show_message.setText(chat.getMessage());
+        if (chat.isIs_image()) {
+            holder.show_image.setVisibility(View.VISIBLE);
+            holder.show_message.setVisibility(View.INVISIBLE);
+            Glide.with(mContext).load(chat.getMessage()).into(holder.show_image);
+            RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.BELOW, R.id.show_image);
+            params.addRule(RelativeLayout.ALIGN_PARENT_END, 1);
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 1);
+            holder.txt_seen.setLayoutParams(params);
+        } else {
+            holder.show_message.setText(chat.getMessage());
+        }
 
         if (imageURL.equals("default")) {
             holder.profile_image.setImageResource(R.mipmap.ic_user_default);
@@ -85,6 +93,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         public ImageView profile_image;
 
         public TextView txt_seen;
+        public ImageView show_image;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -92,6 +101,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             show_message = itemView.findViewById(R.id.show_message);
             profile_image = itemView.findViewById(R.id.profile_image);
             txt_seen = itemView.findViewById(R.id.txt_seen);
+            show_image = itemView.findViewById(R.id.show_image);
         }
     }
 

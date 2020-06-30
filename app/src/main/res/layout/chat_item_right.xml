@@ -25,7 +25,19 @@
             android:textColor="#fff"
             android:padding="8dp"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentEnd="true"
+            android:visibility="visible"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/show_image"
+            android:src="@mipmap/ic_launcher_round"
+            android:visibility="gone"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"/>
 
         <TextView
             android:layout_width="wrap_content"

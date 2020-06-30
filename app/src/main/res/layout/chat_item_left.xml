@@ -20,7 +20,8 @@
         android:id="@+id/show_message"
         android:textSize="18sp"
         android:padding="8dp"
-        android:background="@drawable/background_left"/>
+        android:background="@drawable/background_left"
+        android:visibility="visible"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,4 +30,15 @@
         android:layout_below="@id/show_message"
         android:visibility="gone"/>
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/profile_image"
+        android:layout_marginLeft="5dp"
+        android:id="@+id/show_image"
+        android:src="@mipmap/ic_launcher_round"
+        android:background="@drawable/background_left"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:visibility="invisible"/>
 </RelativeLayout>

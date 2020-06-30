@@ -137,6 +137,7 @@ public class CallActivity extends AppCompatActivity {
         pickup_button.setVisibility(View.VISIBLE);
         mAudioPlayer = new AudioPlayer(this);
         mAudioPlayer.playRingtone();
+        if (call != null)
         call.addCallListener(new SinchCallListener());
         status.setText("Incoming call");
         pickup_button.setOnClickListener(new View.OnClickListener() {

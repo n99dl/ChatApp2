@@ -118,9 +118,12 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder> 
                     if ((chat.getReceiver().equals(currentUserId) && chat.getSender().equals(userId)) ||
                             (chat.getSender().equals(currentUserId) && chat.getReceiver().equals(userId))) {
                             theLastMessage = chat.getMessage();
+                            if (chat.isIs_image()) {
+                                theLastMessage = "sent an Image";
+                            }
                             if (chat.getSender().equals(currentUserId)) {
                                 theLastMessage = "You: " + theLastMessage;
-                        }
+                            }
                     }
                 }
 

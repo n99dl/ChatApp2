@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/text_send"
-            android:layout_toLeftOf="@id/btn_send"
+            android:layout_toLeftOf="@id/btn_photo"
             android:hint="type your message..."
             android:layout_centerVertical="true"/>
         <ImageButton
@@ -88,6 +88,13 @@
             android:id="@+id/btn_send"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"/>
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/ic_photo"
+            android:id="@+id/btn_photo"
+            android:layout_toLeftOf="@id/btn_send"/>
+
     </RelativeLayout>
 
 </RelativeLayout>
